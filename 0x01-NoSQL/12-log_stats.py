@@ -6,11 +6,9 @@ stored in MongoDB
 from pymongo import MongoClient
 
 
-def log_stats(mongo_uri):
-    '''
-    function that logs stats of db stored in MongoDB
-    '''
-    client = MongoClient(mongo_uri)
+
+if __name__ == '__main__':
+    client = MongoClient('mongodb://127.0.0.1:27017')
     db = client.logs
     collection = db.nginx
 
@@ -19,6 +17,8 @@ def log_stats(mongo_uri):
     print(f'{total_logs} logs')
 
     methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+
+    print("Methods:")
     for method in methods:
         count = collection.count_documents({'method': method})
         print(f'\tmethod {method}: {count}')
@@ -27,8 +27,3 @@ def log_stats(mongo_uri):
             {'method': "GET", 'path': '/status'}
             )
     print(f'{status_path_count} status check')
-
-
-if __name__ == '__main__':
-    mongo_uri = 'mongodb://127.0.0.1:27017'
-    log_stats(mongo_uri)

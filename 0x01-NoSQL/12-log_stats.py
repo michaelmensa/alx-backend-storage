@@ -6,11 +6,11 @@ stored in MongoDB
 from pymongo import MongoClient
 
 
-def log_stats():
+def log_stats(mongo_uri):
     '''
     function that logs stats of db stored in MongoDB
     '''
-    client = MongoClient()
+    client = MongoClient(mongo_uri)
     db = client.logs
     collection = db.nginx
 
@@ -31,4 +31,5 @@ def log_stats():
 
 
 if __name__ == '__main__':
-    log_stats()
+    mongo_uri = 'mongodb://127.0.0.1:27017'
+    log_stats(mongo_uri)

@@ -11,17 +11,16 @@ if __name__ == '__main__':
     db = client.logs
     collection = db.nginx
 
-    total_logs = collection.count_documents({})
+    total_logs = collection.estimated_document_count()
 
     print(f'{total_logs} logs')
-
     methods = ["GET", "POST", "PUT", "PATCH", "DELETE"]
-
+    print('Methods:')
     for method in methods:
-        count = len(list(collection.find({'method': method})))
+        count = collection.count_documents({'method': method})
         print(f'\tmethod {method}: {count}')
 
-    status_path_count = len(list(
-        collection.find({'method': 'GET', 'path': '/status'})
-        ))
+    status_path_count = collection.count_documents(
+            {'method': 'GET', 'path': '/status'}
+            )
     print(f'{status_path_count} status check')

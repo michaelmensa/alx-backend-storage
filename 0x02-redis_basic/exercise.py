@@ -8,6 +8,34 @@ from typing import Union, Callable, Optional, Any
 from functools import wraps
 
 
+def replay(func: Callable) -> None:
+    '''
+    function to display the history of calls of a particular function
+    '''
+    # check if func is of __self__
+    if func is None or not hasattr(func, '__self__'):
+        return
+
+    # check if func is of Redis
+    history = getattr(func.__self__, 'redis', None)
+    if not isinstance(history, redis.Redis):
+        return
+
+    i_key = f'{func.__qualname__}:inputs'
+    o_key = f'{func.__qualname__}:outputs'
+    count = 0
+
+    if history.exists(func.__qualname__) != 0:
+        count = int(history.get(func.__qualname__))
+    print(f'{func.__qualname__} was called {count} times:')
+
+    inputs = history.lrange(i_key, 0, -1)
+    outputs = history.lrange(o_key, 0, -1)
+
+    for i, o in zip(inputs, outputs):
+        print(f'{func.__qualname}(*{i.decode("utf-8")}) -> {o}')
+
+
 def count_calls(method: Callable) -> Callable:
     '''
     decorator function that takes method arg and returns callable

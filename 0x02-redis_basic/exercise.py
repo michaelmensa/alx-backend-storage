@@ -33,7 +33,8 @@ def replay(func: Callable) -> None:
     outputs = history.lrange(o_key, 0, -1)
 
     for i, o in zip(inputs, outputs):
-        print(f'{func.__qualname__}(*{i.decode("utf-8")}) -> {o}')
+        print(f'{func.__qualname__}(*{i.decode("utf-8")})
+              -> {o.decode('utf-8')}')
 
 
 def count_calls(method: Callable) -> Callable:
